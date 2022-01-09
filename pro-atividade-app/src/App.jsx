@@ -25,7 +25,11 @@ function App() {
   function addAtividade(e) {
     e.preventDefault();
     const atividade = {
-      Id: document.getElementById("id").value,
+      Id:
+        Math.max.apply(
+          Math,
+          listaAtividades.map((p) => p.Id)
+        ) + 1,
       Descricao: document.getElementById("descricao").value,
       Titulo: document.getElementById("titulo").value,
       Prioridade: document.getElementById("prioridade").value,
@@ -34,16 +38,15 @@ function App() {
   }
 
   function deletarAtividade(id) {
-    const atividadesFiltradas = listaAtividades.filter((p) => p.Id !== id);
+    const listaAtividadesFiltradas = listaAtividades.filter((p) => p.Id !== id);
 
-    setListaAtividades([...atividadesFiltradas]);
+    setListaAtividades([...listaAtividadesFiltradas]);
   }
 
   function editarAtividade(id) {
     const atividade = listaAtividades.filter((p) => p.Id === id);
-
-
-    setAtividade([atividade(0)]);
+    
+    setAtividade(atividade[0]);
   }
 
   return (
@@ -51,9 +54,9 @@ function App() {
       <AtividadeForm
         addAtividade={addAtividade}
         listaAtividades={listaAtividades}
-        AtivSelecionada={atividade}
+        atividadeSelecionada={atividade}
       />
-      <AtividadesLista 
+      <AtividadesLista
         deletarAtividade={deletarAtividade}
         editarAtividade={editarAtividade}
         listaAtividades={listaAtividades}
