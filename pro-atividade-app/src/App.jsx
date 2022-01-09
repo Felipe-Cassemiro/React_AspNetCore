@@ -1,40 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 import AtividadeForm from "./components/AtividadeForm";
 import AtividadesLista from "./components/AtividadesLista";
 
+let initialStage = [
+  {
+    Id: 1,
+    Descricao: "Primeira Atividade",
+    Prioridade: "1",
+    Titulo: "Título",
+  },
+  {
+    Id: 2,
+    Descricao: "Segunda Atividade",
+    Prioridade: "1",
+    Titulo: "Título",
+  },
+]
+
 function App() {
-  const [listaAtividades, setListaAtividades] = useState([
-    {
-      Id: 1,
-      Descricao: "Primeira Atividade",
-      Prioridade: "1",
-      Titulo: "Título",
-    },
-    {
-      Id: 2,
-      Descricao: "Segunda Atividade",
-      Prioridade: "1",
-      Titulo: "Título",
-    },
-  ]);
+  const [index, setIndex] = useState(0);
+  const [listaAtividades, setListaAtividades] = useState(initialStage);
+  const [atividade, setAtividade] = useState({Id: 0});
 
-  const [atividade, setAtividade] = useState({});
+  useEffect(() => {
+    listaAtividades.length <= 0 ? setIndex(1) : 
+    setIndex(Math.max.apply(Math,listaAtividades.map((p) => p.Id)) + 1)
 
-  function addAtividade(e) {
-    e.preventDefault();
-    const atividade = {
-      Id:
-        Math.max.apply(
-          Math,
-          listaAtividades.map((p) => p.Id)
-        ) + 1,
-      Descricao: document.getElementById("descricao").value,
-      Titulo: document.getElementById("titulo").value,
-      Prioridade: document.getElementById("prioridade").value,
-    };
-    setListaAtividades([...listaAtividades, { ...atividade }]);
+  }, [listaAtividades])
+
+  function addAtividade(ativ) {
+    
+    setListaAtividades([...listaAtividades, { ...ativ, Id: index  }]);
+  }
+
+  function atualizarAtividade(ativ) {
+    setListaAtividades(listaAtividades.map(p => p.Id === ativ.Id ? ativ : p))
+    setAtividade({Id: 0})
+  }
+
+  function cancelarAtividade() {
+    setAtividade({Id: 0})
   }
 
   function deletarAtividade(id) {
@@ -55,6 +62,8 @@ function App() {
         addAtividade={addAtividade}
         listaAtividades={listaAtividades}
         atividadeSelecionada={atividade}
+        atualizarAtividade={atualizarAtividade}
+        cancelarAtividade={cancelarAtividade}
       />
       <AtividadesLista
         deletarAtividade={deletarAtividade}
