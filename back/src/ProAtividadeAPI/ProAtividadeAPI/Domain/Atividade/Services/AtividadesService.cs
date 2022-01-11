@@ -14,11 +14,40 @@ namespace ProAtividade.API.Services
             
         }
 
-        public async Task<IEnumerable<AtividadeDTO>> ListarAtividades(AtividadeFiltroDTO filtro){   
-            
-            
-            var query = ObterQueryFiltrada(filtro);
-            
+        public async Task<IEnumerable<AtividadeDTO>> ListarAtividades(){
+
+
+            var query = _context.Atividade.AsQueryable();
+
+            var atividade = query.Select(
+                p => new AtividadeDTO {
+                    Id = p.Id,
+                    Titulo = p.Titulo,
+                    Descricao = p.Descricao,
+                    PrioridadeEnum = p.Prioridade
+                }
+            ).ToListAsync();
+
+            return await atividade;
+        }
+
+        public async Task<IEnumerable<AtividadeDTO>> PesquisarAtividadePor(AtividadeFiltroDTO filtro) {
+
+
+            var query = _context.Atividade.AsQueryable();
+
+            if (string.IsNullOrWhiteSpace(filtro.TextoDaPesquisa)) {
+                return await ListarAtividades();
+            }
+
+            if (filtro.PesquisarPor == PesquisarPorTituloOuDescricao.Titulo) {
+                query = query.Where(p => p.Titulo.Contains(filtro.TextoDaPesquisa));
+            }
+
+            if (filtro.PesquisarPor == PesquisarPorTituloOuDescricao.Descricao) {
+                query = query.Where(p => p.Titulo.Contains(filtro.TextoDaPesquisa));
+            }
+
             var atividade = query.Select(
                 p => new AtividadeDTO {
                     Id = p.Id,
@@ -69,29 +98,19 @@ namespace ProAtividade.API.Services
             
             var atividadeEditada = atividadeSelecionada
             .Select(p => new Atividade {
+                Id = p.Id,
                 Descricao = atividade.Descricao,
                 Titulo = atividade.Titulo,
                 Prioridade = atividade.PrioridadeEnum
             }).First();
 
+            if (atividadeEditada.Id <= 0) {
+                throw new Exception();
+            }
+
             _context.Entry(atividadeEditada).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
-        }
-
-        private IQueryable<Atividade> ObterQueryFiltrada(AtividadeFiltroDTO filtro)
-        {
-            var query = _context.Atividade.AsQueryable();
-            
-            if(string.IsNullOrWhiteSpace(filtro.Titulo)){
-                query = query.Where(p => p.Titulo.Contains(filtro.Titulo));
-            }
-
-            if(string.IsNullOrWhiteSpace(filtro.Descricao)){
-                query = query.Where(p => p.Titulo.Contains(filtro.Descricao));
-            }
-
-            return query;
         }
 
     }

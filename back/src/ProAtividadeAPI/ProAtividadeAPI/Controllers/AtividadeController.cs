@@ -17,10 +17,10 @@ namespace ProAtividade.API.Controllers
         }
         
         [HttpGet]
-        public async Task<ActionResult<IAsyncEnumerable<AtividadeDTO>>> ListarAtividades(AtividadeFiltroDTO filtro) {
+        public async Task<ActionResult<IAsyncEnumerable<AtividadeDTO>>> ListarAtividades() {
             try {
 
-                var dados = await _atividadeService.ListarAtividades(filtro);
+                var dados = await _atividadeService.ListarAtividades();
                 return Ok(dados);
 
             } catch {
@@ -30,12 +30,12 @@ namespace ProAtividade.API.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<ActionResult<AtividadeDTO>> SalvarNovaAtividade(AtividadeDTO atividade) {
+        [HttpPost("PesquisarAtividade")]
+        public async Task<ActionResult<IAsyncEnumerable<AtividadeDTO>>> PesquisarAtividadePor([FromBody] AtividadeFiltroDTO filtro) {
             try {
-                 
-                await _atividadeService.AdicionarAtividade(atividade);
-                return Ok("A atividade foi adicionada com sucesso");                
+
+                var dados = await _atividadeService.PesquisarAtividadePor(filtro);
+                return Ok(dados);                
 
             } catch {
 
@@ -44,14 +44,29 @@ namespace ProAtividade.API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<AtividadeDTO>> EditarAtividade(int id, AtividadeDTO atividade) {
+        [HttpPost]
+        public async Task<ActionResult<AtividadeDTO>> SalvarNovaAtividade([FromBody] AtividadeDTO atividade) {
+            try {
+
+                await _atividadeService.AdicionarAtividade(atividade);
+                return Ok("A atividade foi adicionada com sucesso");
+
+            }
+            catch {
+
+                return BadRequest("Requisição inválida");
+
+            }
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<AtividadeDTO>> EditarAtividade([FromBody] AtividadeDTO atividade) {
             try
             {
-                 if (id == atividade.Id){
+                 if (atividade.Id.HasValue){
                      
                      await _atividadeService.EditarAtividade(atividade);
-                     return Ok("A atividade foi removida com sucesso");
+                     return Ok("A atividade foi editada com sucesso");
 
                  } else {
 
