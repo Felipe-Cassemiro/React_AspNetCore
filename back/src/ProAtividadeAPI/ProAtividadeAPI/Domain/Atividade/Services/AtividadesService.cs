@@ -14,30 +14,28 @@ namespace ProAtividade.API.Services
             
         }
 
-        public async Task<IEnumerable<AtividadeDTO>> ListarAtividades(){
+        public async Task<IEnumerable<AtividadeDTO>> ListarAtividades(AtividadeFiltroDTO filtro) {
 
 
-            var query = _context.Atividade.AsQueryable();
+            var query = QueryFiltrada(filtro);
 
             var atividade = query.Select(
                 p => new AtividadeDTO {
                     Id = p.Id,
                     Titulo = p.Titulo,
                     Descricao = p.Descricao,
-                    PrioridadeEnum = p.Prioridade
+                    Prioridade = p.Prioridade
                 }
             ).ToListAsync();
 
             return await atividade;
         }
 
-        public async Task<IEnumerable<AtividadeDTO>> PesquisarAtividadePor(AtividadeFiltroDTO filtro) {
-
-
+        private IQueryable<Atividade> QueryFiltrada(AtividadeFiltroDTO filtro) {
             var query = _context.Atividade.AsQueryable();
 
             if (string.IsNullOrWhiteSpace(filtro.TextoDaPesquisa)) {
-                return await ListarAtividades();
+                return query;
             }
 
             if (filtro.PesquisarPor == PesquisarPorTituloOuDescricao.Titulo) {
@@ -48,37 +46,36 @@ namespace ProAtividade.API.Services
                 query = query.Where(p => p.Titulo.Contains(filtro.TextoDaPesquisa));
             }
 
-            var atividade = query.Select(
-                p => new AtividadeDTO {
-                    Id = p.Id,
-                    Titulo = p.Titulo,
-                    Descricao = p.Descricao,
-                    PrioridadeEnum = p.Prioridade
-                }
-            ).ToListAsync();
-
-            return await atividade;
+            return query;
         }
 
-        public async Task AdicionarAtividade(AtividadeDTO atividade){
+        public async Task<AtividadeDTO> AdicionarAtividade(AtividadeDTO atividade){
 
             if(string.IsNullOrWhiteSpace(atividade.Titulo)){
-                return;
+                throw new Exception("A atividade deve ter um título");
             }
 
             var NovaAtividade = new Atividade{
                 Descricao = atividade.Descricao,
                 Titulo = atividade.Titulo,
-                Prioridade = atividade.PrioridadeEnum
+                Prioridade = atividade.Prioridade
             };
 
             _context.Atividade.Add(NovaAtividade);
             
             await _context.SaveChangesAsync();
+
+            atividade.Id = NovaAtividade.Id;
+
+            return atividade;
         }
 
         public async Task DeletarTarefa(int? id){
-            
+
+            if (id <= 0) {
+                throw new Exception();
+            };
+
             var query = _context.Atividade.AsQueryable();
             var atividadeSelecionada = query.Where(p => p.Id == id).First();
             
@@ -87,11 +84,11 @@ namespace ProAtividade.API.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task EditarAtividade(AtividadeDTO atividade){
+        public async Task<AtividadeDTO> EditarAtividade(AtividadeDTO atividade){
             
-            if(string.IsNullOrWhiteSpace(atividade.Titulo)){
-                return;
-            }
+            if(string.IsNullOrWhiteSpace(atividade.Titulo) || atividade.Id <= 0) {
+                throw new Exception();
+            };
 
             var query = _context.Atividade.AsQueryable();
             var atividadeSelecionada = query.Where(p => p.Id == atividade.Id);
@@ -101,15 +98,21 @@ namespace ProAtividade.API.Services
                 Id = p.Id,
                 Descricao = atividade.Descricao,
                 Titulo = atividade.Titulo,
-                Prioridade = atividade.PrioridadeEnum
+                Prioridade = atividade.Prioridade
             }).First();
-
-            if (atividadeEditada.Id <= 0) {
-                throw new Exception();
-            }
 
             _context.Entry(atividadeEditada).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+
+            var retorno = query
+                .Select(p => new AtividadeDTO {
+                    Id = p.Id,
+                    Titulo = p.Titulo,
+                    Descricao = p.Descricao,
+                    Prioridade = p.Prioridade
+                }).Where(p => p.Id == atividade.Id).First();
+
+            return retorno;
 
         }
 

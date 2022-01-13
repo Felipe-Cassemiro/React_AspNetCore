@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 
 const atividadeInicial = {
-  Id: 0,
-  Titulo: "",
-  Prioridade: 0,
-  Descricao: "",
+  id: 0,
+  titulo: "",
+  prioridade: "NaoDefinido",
+  descricao: "",
 };
 
 export default function AtividadeForm(props) {
   const [atividade, setAtividade] = useState(atividadeAtual());
 
   useEffect(() => {
-    if (props.atividadeSelecionada.Id !== 0) setAtividade(props.atividadeSelecionada);
+    if (props.atividadeSelecionada.id !== 0) setAtividade(props.atividadeSelecionada);
   }, [props.atividadeSelecionada]);
 
   const inputTextHandler = (e) => {
@@ -21,7 +21,7 @@ export default function AtividadeForm(props) {
   };
 
   function atividadeAtual() {
-    if (props.atividadeSelecionada.Id !== 0) {
+    if (props.atividadeSelecionada.id !== 0) {
       return props.atividadeSelecionada;
     } else {
       return atividadeInicial;
@@ -31,7 +31,7 @@ export default function AtividadeForm(props) {
   const editarOuCriarAtividade = (e) => {
     e.preventDefault();
 
-    if(props.atividadeSelecionada.Id !== 0){
+    if(props.atividadeSelecionada.id !== 0){
       props.atualizarAtividade(atividade)
     } else {
       props.addAtividade(atividade);
@@ -51,16 +51,16 @@ export default function AtividadeForm(props) {
 
   return (
     <>
-      <h1>Atividade {atividade.Id !==0 ? atividade.Id : ''}</h1>
+      <h1>Atividade {atividade.id !==0 ? atividade.id : ''}</h1>
       <form className="row g-3" onSubmit={editarOuCriarAtividade}>
         <div className="col-md-6 mb-1">
           <label className="form-label">Título</label>
           <input
             className="form-control"
             id="titulo"
-            name="Titulo"
+            name="titulo"
             onChange={inputTextHandler}
-            value={atividade.Titulo}
+            value={atividade.titulo}
             type="text"
             placeholder="Título"
           />
@@ -70,15 +70,15 @@ export default function AtividadeForm(props) {
           <label className="form-label">Prioridade</label>
           <select
             id="prioridade"
-            name="Prioridade"
+            name="prioridade"
             onChange={inputTextHandler}
-            value={atividade.Prioridade}
+            value={atividade.prioridade}
             className="form-select"
           >
-            <option defaultValue="0">Selecione...</option>
-            <option value="1">Baixa</option>
-            <option value="2">Normal</option>
-            <option value="3">Alta</option>
+            <option value="NaoDefinido">Selecione...</option>
+            <option value="Baixa">Baixa</option>
+            <option value="Normal">Normal</option>
+            <option value="Alta">Alta</option>
           </select>
         </div>
 
@@ -88,14 +88,14 @@ export default function AtividadeForm(props) {
             className="form-control"
             id="descricao"
             type="text"
-            name="Descricao"
+            name="descricao"
             onChange={inputTextHandler}
-            value={atividade.Descricao}
+            value={atividade.descricao}
             placeholder="Descricao"
           />
         </div>
         <div className="col-12">
-          {props.atividadeSelecionada.Id === 0 ? (
+          {props.atividadeSelecionada.id === 0 ? (
             <button className="btn btn-outline-secondary" type="submit">
               <i className="fas fa-plus me-2"></i>
               Atividade

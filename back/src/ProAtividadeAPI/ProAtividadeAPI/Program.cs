@@ -11,6 +11,8 @@ builder.Services.AddDbContext<AppDbContext>(
 );
 builder.Services.AddScoped<IAtividadesService, AtividadesService>();
 
+builder.Services.AddCors();
+
 builder.Services.AddControllers()
     .AddJsonOptions(p => p.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -29,6 +31,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors(option => option.AllowAnyHeader()
+                            .AllowAnyOrigin()
+                            .AllowAnyMethod());
 
 app.MapControllers();
 

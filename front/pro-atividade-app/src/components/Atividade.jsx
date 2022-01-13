@@ -4,12 +4,10 @@ export default function Atividade(props) {
 
     function prioridadeAtividade(param) {
         switch (param) {
-          case "1":
-            return "Baixa";
-          case "2":
-            return "Normal";
-          case "3":
-            return "Alta";
+          case "Baixa":
+          case "Normal":
+          case "Alta":
+            return param;
     
           default:
             return "Não Definido";
@@ -18,11 +16,11 @@ export default function Atividade(props) {
     
       function prioridadeAtividadeStyle(param, icone) {
         switch (param) {
-          case "1":
+          case "Baixa":
             return icone ? "smile" : "success";
-          case "2":
+          case "Normal":
             return icone ? "meh" : "secondary";
-          case "3":
+          case "Alta":
             return icone ? "frown" : "danger";
     
           default:
@@ -35,7 +33,7 @@ export default function Atividade(props) {
       <div
         className={
           "card-body border border-" +
-          prioridadeAtividadeStyle(props.ativ.Prioridade, false)
+          prioridadeAtividadeStyle(props.ativ.prioridade, false)
         }
       >
         <div className="d-flex justify-content-between">
@@ -43,10 +41,10 @@ export default function Atividade(props) {
             <span
               className={
                 "badge rounded-pill me-2 bg-" +
-                prioridadeAtividadeStyle(props.ativ.Prioridade, false)
+                prioridadeAtividadeStyle(props.ativ.prioridade, false)
               }
             >
-              {props.ativ.Id} - {props.ativ.Titulo}
+              {props.ativ.id} - {props.ativ.titulo}
             </span>
           </h5>
           <h6>
@@ -54,31 +52,31 @@ export default function Atividade(props) {
             <span
               className={
                 "ms-2 text-" +
-                prioridadeAtividadeStyle(props.ativ.Prioridade, false)
+                prioridadeAtividadeStyle(props.ativ.prioridade, false)
               }
             >
               <i
                 className={
                   "me-1  far fa-" +
-                  prioridadeAtividadeStyle(props.ativ.Prioridade, true)
+                  prioridadeAtividadeStyle(props.ativ.prioridade, true)
                 }
               ></i>
-              {prioridadeAtividade(props.ativ.Prioridade)}
+              {prioridadeAtividade(props.ativ.prioridade)}
             </span>
           </h6>
         </div>
-        <p className="card-text">{props.ativ.Descricao}</p>
+        <p className="card-text">{props.ativ.descricao}</p>
 
         <div className="d-flex justify-content-end border-top pt-2 m-0">
           <button className="btn-sm btn-outline-primary me-2"
-            onClick={() => props.editarAtividade(props.ativ.Id)}
+            onClick={() => props.editarAtividade(props.ativ.id)}
           >
             <i className="fas fa-pen me-2"></i>
             Editar
           </button>
           <button
             className="btn-sm btn-outline-danger"
-            onClick={() => props.deletarAtividade(props.ativ.Id)}
+            onClick={() => props.deletarAtividade(props.ativ.id)}
           >
             <i className="fas fa-trash me-2"></i>
             Deletar

@@ -3,55 +3,51 @@ import "./App.css";
 
 import AtividadeForm from "./components/AtividadeForm";
 import AtividadesLista from "./components/AtividadesLista";
+import apiAtividade from './api/atividade'
 
-let initialStage = [
-  {
-    Id: 1,
-    Descricao: "Primeira Atividade",
-    Prioridade: "1",
-    Titulo: "Título",
-  },
-  {
-    Id: 2,
-    Descricao: "Segunda Atividade",
-    Prioridade: "1",
-    Titulo: "Título",
-  },
-]
 
 function App() {
-  const [index, setIndex] = useState(0);
-  const [listaAtividades, setListaAtividades] = useState(initialStage);
-  const [atividade, setAtividade] = useState({Id: 0});
+  const [listaAtividades, setListaAtividades] = useState([]);
+  const [atividade, setAtividade] = useState({id: 0});
 
+  const listarAtividades = async () => {
+    const response = await apiAtividade.get('atividade');
+    return response.data;
+  }
+  
   useEffect(() => {
-    listaAtividades.length <= 0 ? setIndex(1) : 
-    setIndex(Math.max.apply(Math,listaAtividades.map((p) => p.Id)) + 1)
+    const getAtividades = async () => {
+      const todasAtividades = await listarAtividades();
+      if (todasAtividades) setListaAtividades(todasAtividades);
+    }
+    getAtividades();
+  }, [])
 
-  }, [listaAtividades])
-
-  function addAtividade(ativ) {
-    
-    setListaAtividades([...listaAtividades, { ...ativ, Id: index  }]);
+  const addAtividade = async (ativ) => {
+    const response = await apiAtividade.post('atividade', ativ);
+    setListaAtividades([...listaAtividades, response.data]);
   }
 
-  function atualizarAtividade(ativ) {
-    setListaAtividades(listaAtividades.map(p => p.Id === ativ.Id ? ativ : p))
-    setAtividade({Id: 0})
+  const atualizarAtividade = async (ativ) => {
+    const response = await apiAtividade.put('atividade/', ativ)
+    const { id } = response.data
+    setListaAtividades(listaAtividades.map(p => p.id === id ? response.data : p))
+    setAtividade({id: 0})
   }
 
   function cancelarAtividade() {
-    setAtividade({Id: 0})
+    setAtividade({id: 0})
   }
 
-  function deletarAtividade(id) {
-    const listaAtividadesFiltradas = listaAtividades.filter((p) => p.Id !== id);
-
-    setListaAtividades([...listaAtividadesFiltradas]);
+  const deletarAtividade = async (id) => {
+    if (await apiAtividade.delete(`atividade/${id}`)) {
+      const listaAtividadesFiltradas = listaAtividades.filter((p) => p.id !== id);
+      setListaAtividades([...listaAtividadesFiltradas]);
+   }
   }
 
   function editarAtividade(id) {
-    const atividade = listaAtividades.filter((p) => p.Id === id);
+    const atividade = listaAtividades.filter((p) => p.id === id);
     
     setAtividade(atividade[0]);
   }

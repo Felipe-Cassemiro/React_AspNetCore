@@ -6,7 +6,7 @@ export default function AtividadesLista(props) {
         <div className="mt-5">
         {props.listaAtividades.map((ativ) => (
           <Atividade
-            key={ativ.Id}
+            key={ativ.id}
             ativ={ativ}
             deletarAtividade={props.deletarAtividade}
             editarAtividade={props.editarAtividade}

@@ -15,12 +15,12 @@ namespace ProAtividade.API.Controllers
             _atividadeService = atividadeService;
 
         }
-        
+
         [HttpGet]
-        public async Task<ActionResult<IAsyncEnumerable<AtividadeDTO>>> ListarAtividades() {
+        public async Task<ActionResult<IAsyncEnumerable<AtividadeDTO>>> ListarAtividades([FromQuery] AtividadeFiltroDTO filtro) {
             try {
 
-                var dados = await _atividadeService.ListarAtividades();
+                var dados = await _atividadeService.ListarAtividades(filtro);
                 return Ok(dados);
 
             } catch {
@@ -30,26 +30,12 @@ namespace ProAtividade.API.Controllers
             }
         }
 
-        [HttpPost("PesquisarAtividade")]
-        public async Task<ActionResult<IAsyncEnumerable<AtividadeDTO>>> PesquisarAtividadePor([FromBody] AtividadeFiltroDTO filtro) {
-            try {
-
-                var dados = await _atividadeService.PesquisarAtividadePor(filtro);
-                return Ok(dados);                
-
-            } catch {
-
-                return BadRequest("Requisição inválida");
-                
-            }
-        }
-
         [HttpPost]
         public async Task<ActionResult<AtividadeDTO>> SalvarNovaAtividade([FromBody] AtividadeDTO atividade) {
             try {
 
-                await _atividadeService.AdicionarAtividade(atividade);
-                return Ok("A atividade foi adicionada com sucesso");
+                var atividadeAdicionada = await _atividadeService.AdicionarAtividade(atividade);
+                return atividadeAdicionada;
 
             }
             catch {
@@ -66,7 +52,7 @@ namespace ProAtividade.API.Controllers
                  if (atividade.Id.HasValue){
                      
                      await _atividadeService.EditarAtividade(atividade);
-                     return Ok("A atividade foi editada com sucesso");
+                     return atividade;
 
                  } else {
 
