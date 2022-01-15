@@ -69,7 +69,7 @@ namespace ProAtividade.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<AtividadeDTO>> DeletarAtividade(int? id) {
+        public async Task<ActionResult> DeletarAtividade(int? id) {
             try {
                 if(id > 0) {
 
