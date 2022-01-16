@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using ProAtividade.Data.Context;
+using ProAtividade.Domain.Atividade.Repositories;
 using ProAtividade.Domain.Atividade.Services;
+using ProAtividade.Domain.Base;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,8 @@ builder.Services.AddDbContext<AppDbContext>(
 );
 
 builder.Services.AddScoped<IAtividadeService, AtividadeService>();
+builder.Services.AddScoped<IAtividadeRepository, AtividadeRepository>();
+builder.Services.AddScoped<IBaseRepository, BaseRepository>();
 
 builder.Services.AddControllers();
 
@@ -31,7 +35,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.UseCors(option => option.AllowAnyHeader()
-                            .AllowAnyOrigin()
+                            .WithOrigins("http://localhost:3000")
                             .AllowAnyMethod());
 
 app.MapControllers();

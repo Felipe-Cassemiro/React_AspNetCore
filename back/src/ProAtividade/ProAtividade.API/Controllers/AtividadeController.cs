@@ -1,93 +1,94 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProAtividade.Domain.Atividade.DTO;
+using ProAtividade.Domain.Atividade.Services;
 
 namespace ProAtividade.API.Controllers {
-
-    [ApiController]
     [Route("api/[controller]")]
-    public class AtividadeController  : ControllerBase {
-        
-        //public IAtividadesService _atividadeService;
+    [ApiController]
+    public class AtividadeController : ControllerBase {
 
-        //public AtividadeController(IAtividadesService atividadeService) {
+        public IAtividadeService _atividadeService;
 
-        //    _atividadeService = atividadeService;
+        public AtividadeController(IAtividadeService atividadeService) {
 
-        //}
+            _atividadeService = atividadeService;
 
-        //[HttpGet]
-        //public async Task<ActionResult<IAsyncEnumerable<AtividadeDTO>>> ListarAtividades([FromQuery] AtividadeFiltroDTO filtro) {
-        //    try {
+        }
 
-        //        var dados = await _atividadeService.ListarAtividades(filtro);
-        //        return Ok(dados);
+        [HttpGet]
+        public async Task<ActionResult<IAsyncEnumerable<AtividadeDTO>>> ListarAtividades([FromQuery] AtividadeFiltroDTO filtro) {
+            try {
 
-        //    }
-        //    catch {
+                var dados = await _atividadeService.ListarAtividades(filtro);
+                return Ok(dados);
 
-        //        return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao obter lista de alunos");
+            }
+            catch {
 
-        //    }
-        //}
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao obter lista de alunos");
 
-        //[HttpPost]
-        //public async Task<ActionResult<AtividadeDTO>> SalvarNovaAtividade([FromBody] AtividadeDTO atividade) {
-        //    try {
+            }
+        }
 
-        //        var atividadeAdicionada = await _atividadeService.AdicionarAtividade(atividade);
-        //        return atividadeAdicionada;
+        [HttpPost]
+        public async Task<ActionResult<AtividadeDTO>> SalvarNovaAtividade([FromBody] AtividadeDTO atividade) {
+            try {
 
-        //    }
-        //    catch {
+                var atividadeAdicionada = await _atividadeService.AdicionarAtividade(atividade);
+                return atividadeAdicionada;
 
-        //        return BadRequest("Requisição inválida");
+            }
+            catch {
 
-        //    }
-        //}
+                return BadRequest("Requisição inválida");
 
-        //[HttpPut]
-        //public async Task<ActionResult<AtividadeDTO>> EditarAtividade([FromBody] AtividadeDTO atividade) {
-        //    try {
-        //        if (atividade.Id.HasValue) {
+            }
+        }
 
-        //            await _atividadeService.EditarAtividade(atividade);
-        //            return atividade;
+        [HttpPut]
+        public async Task<ActionResult<AtividadeDTO>> EditarAtividade([FromBody] AtividadeDTO atividade) {
+            try {
+                if (atividade.Id.HasValue) {
 
-        //        }
-        //        else {
+                    await _atividadeService.EditarAtividade(atividade);
+                    return atividade;
 
-        //            return NotFound($"Atividade não encontrado");
+                }
+                else {
 
-        //        }
-        //    }
-        //    catch {
+                    return NotFound($"Atividade não encontrado");
 
-        //        return NotFound($"Atividade Não encontrado");
+                }
+            }
+            catch {
 
-        //    }
-        //}
+                return NotFound($"Atividade Não encontrado");
 
-        //[HttpDelete("{id}")]
-        //public async Task<ActionResult> DeletarAtividade(int? id) {
-        //    try {
-        //        if (id > 0) {
+            }
+        }
 
-        //            await _atividadeService.DeletarTarefa(id);
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeletarAtividade(int? id) {
+            try {
+                if (id > 0) {
 
-        //            return Ok("A atividade foi removida com sucesso");
+                    await _atividadeService.DeletarTarefa(id);
 
-        //        }
-        //        else {
+                    return Ok("A atividade foi removida com sucesso");
 
-        //            return NotFound($"Atividade não encontrado");
+                }
+                else {
 
-        //        }
+                    return NotFound($"Atividade não encontrado");
 
-        //    }
-        //    catch {
+                }
 
-        //        return NotFound($"Atividade Não encontrado");
+            }
+            catch {
 
-        //    }
-        //}
+                return NotFound($"Atividade Não encontrado");
+
+            }
+        }
     }
 }

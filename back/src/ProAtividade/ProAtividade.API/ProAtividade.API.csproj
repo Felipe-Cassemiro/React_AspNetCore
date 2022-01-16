@@ -17,8 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\ProAtividade.Domain\ProAtividade.Domain.csproj" />
 	  <ProjectReference Include="..\ProAtividade.Data\ProAtividade.Data.csproj" />
+	  <ProjectReference Include="..\ProAtividade.Domain\ProAtividade.Domain.csproj" />
 	</ItemGroup>
-
 </Project>

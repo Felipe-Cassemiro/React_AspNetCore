@@ -11,6 +11,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\ProAtividade.Domain\ProAtividade.Domain.csproj" />
+	  <ProjectReference Include="..\ProAtividade.API\ProAtividade.API.csproj" />
 	</ItemGroup>
 
   <PropertyGroup>

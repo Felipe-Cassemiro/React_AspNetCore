@@ -1,118 +1,125 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using Microsoft.EntityFrameworkCore;
+using ProAtividade.Domain.Atividade.DTO;
+using ProAtividade.Domain.Atividade.Repositories;
 
 namespace ProAtividade.Domain.Atividade.Services {
-    public class AtividadeService : IAtividadeService{
-        //private readonly AppDbContext _context;
+    public class AtividadeService : IAtividadeService {
 
-        //        public AtividadesService(AppDbContext context) {
-        //            _context = context;
+        public AtividadeRepository _atividadeRepository { get; }
 
-        //        }
+        public AtividadeService(AtividadeRepository atividadeRepository) {
+            _atividadeRepository = atividadeRepository;
+        }
 
-        //        public async Task<IEnumerable<AtividadeDTO>> ListarAtividades(AtividadeFiltroDTO filtro) {
+        public async Task<IEnumerable<AtividadeDTO>> ListarAtividades(AtividadeFiltroDTO filtro) {
 
 
-        //            var query = QueryFiltrada(filtro);
+            var query = QueryFiltrada(filtro);
 
-        //            var atividade = query.Select(
-        //                p => new AtividadeDTO {
-        //                    Id = p.Id,
-        //                    Titulo = p.Titulo,
-        //                    Descricao = p.Descricao,
-        //                    Prioridade = p.Prioridade
-        //                }
-        //            ).ToListAsync();
+            var atividade = query.Select(
+                p => new AtividadeDTO {
+                    Id = p.Id,
+                    Titulo = p.Titulo,
+                    Descricao = p.Descricao,
+                    Prioridade = p.Prioridade
+                }
+            ).ToListAsync();
 
-        //            return await atividade;
-        //        }
+            return await atividade;
+        }
 
-        //        private IQueryable<Atividade> QueryFiltrada(AtividadeFiltroDTO filtro) {
-        //            var query = _context.Atividade.AsQueryable();
+        private IQueryable<Atividade> QueryFiltrada(AtividadeFiltroDTO filtro) {
 
-        //            if (string.IsNullOrWhiteSpace(filtro.TextoDaPesquisa)) {
-        //                return query;
-        //            }
+            var query = _atividadeRepository.QueryAtividade();
 
-        //            if (filtro.PesquisarPor == PesquisarPorTituloOuDescricao.Titulo) {
-        //                query = query.Where(p => p.Titulo.Contains(filtro.TextoDaPesquisa));
-        //            }
+            if (string.IsNullOrWhiteSpace(filtro.TextoDaPesquisa)) {
+                return query;
+            }
 
-        //            if (filtro.PesquisarPor == PesquisarPorTituloOuDescricao.Descricao) {
-        //                query = query.Where(p => p.Titulo.Contains(filtro.TextoDaPesquisa));
-        //            }
+            if (filtro.PesquisarPor == PesquisarPorTituloOuDescricao.Titulo) {
+                query = query.Where(p => p.Titulo.Contains(filtro.TextoDaPesquisa));
+            }
 
-        //            return query;
-        //        }
+            if (filtro.PesquisarPor == PesquisarPorTituloOuDescricao.Descricao) {
+                query = query.Where(p => p.Titulo.Contains(filtro.TextoDaPesquisa));
+            }
 
-        //        public async Task<AtividadeDTO> AdicionarAtividade(AtividadeDTO atividade){
+            query.AsNoTracking().OrderBy(p => p.Prioridade);
 
-        //            if(string.IsNullOrWhiteSpace(atividade.Titulo)){
-        //                throw new Exception("A atividade deve ter um t�tulo");
-        //            }
+            return query;
+        }
 
-        //            var NovaAtividade = new Atividade{
-        //                Descricao = atividade.Descricao,
-        //                Titulo = atividade.Titulo,
-        //                Prioridade = atividade.Prioridade
-        //            };
+        public async Task<AtividadeDTO> AdicionarAtividade(AtividadeDTO atividade) {
 
-        //            _context.Atividade.Add(NovaAtividade);
+            if (string.IsNullOrWhiteSpace(atividade.Titulo)) {
+                throw new Exception("A atividade deve ter um título");
+            }
 
-        //            await _context.SaveChangesAsync();
+            var query = _atividadeRepository.QueryAtividade();
+            if (query.Where(p => p.Titulo == atividade.Titulo) != null) {
+                throw new Exception("Já existe uma atividade com esse título");
+            }
 
-        //            atividade.Id = NovaAtividade.Id;
+            var NovaAtividade = new Atividade {
+                Descricao = atividade.Descricao,
+                Titulo = atividade.Titulo,
+                Prioridade = atividade.Prioridade
+            };
 
-        //            return atividade;
-        //        }
+            _atividadeRepository.Adicionar(NovaAtividade);
 
-        //        public async Task DeletarTarefa(int? id){
+            await _atividadeRepository.SalvarMudancasAsync();
 
-        //            if (id <= 0) {
-        //                throw new Exception();
-        //            };
+            atividade.Id = NovaAtividade.Id;
 
-        //            var query = _context.Atividade.AsQueryable();
-        //            var atividadeSelecionada = query.Where(p => p.Id == id).First();
+            return atividade;
+        }
 
-        //            _context.Atividade.Remove(atividadeSelecionada);
+        public async Task DeletarTarefa(int? id) {
 
-        //            await _context.SaveChangesAsync();
-        //        }
+            if (id <= 0) {
+                throw new Exception();
+            };
 
-        //        public async Task<AtividadeDTO> EditarAtividade(AtividadeDTO atividade){
+            var query = _atividadeRepository.QueryAtividade();
+            var atividadeSelecionada = query.Where(p => p.Id == id).First();
 
-        //            if(string.IsNullOrWhiteSpace(atividade.Titulo) || atividade.Id <= 0) {
-        //                throw new Exception();
-        //            };
+            _atividadeRepository.Deletar(atividadeSelecionada);
 
-        //            var query = _context.Atividade.AsQueryable();
-        //            var atividadeSelecionada = query.Where(p => p.Id == atividade.Id);
+            await _atividadeRepository.SalvarMudancasAsync();
+        }
 
-        //            var atividadeEditada = atividadeSelecionada
-        //            .Select(p => new Atividade {
-        //                Id = p.Id,
-        //                Descricao = atividade.Descricao,
-        //                Titulo = atividade.Titulo,
-        //                Prioridade = atividade.Prioridade
-        //            }).First();
+        public async Task<AtividadeDTO> EditarAtividade(AtividadeDTO atividade) {
 
-        //            _context.Entry(atividadeEditada).State = EntityState.Modified;
-        //            await _context.SaveChangesAsync();
+            if (string.IsNullOrWhiteSpace(atividade.Titulo) || atividade.Id <= 0) {
+                throw new Exception();
+            };
 
-        //            var retorno = query
-        //                .Select(p => new AtividadeDTO {
-        //                    Id = p.Id,
-        //                    Titulo = p.Titulo,
-        //                    Descricao = p.Descricao,
-        //                    Prioridade = p.Prioridade
-        //                }).Where(p => p.Id == atividade.Id).First();
+            var query = _atividadeRepository.QueryAtividade();
+            var atividadeSelecionada = query.Where(p => p.Id == atividade.Id);
 
-        //            return retorno;
+            var atividadeEditada = atividadeSelecionada
+            .Select(p => new Atividade {
+                Id = p.Id,
+                Descricao = atividade.Descricao,
+                Titulo = atividade.Titulo,
+                Prioridade = atividade.Prioridade
+            }).First();
 
-        //        }
+            _atividadeRepository.Atualizar(atividadeEditada);
+            await _atividadeRepository.SalvarMudancasAsync();
+
+            var retorno = query
+                .Select(p => new AtividadeDTO {
+                    Id = p.Id,
+                    Titulo = p.Titulo,
+                    Descricao = p.Descricao,
+                    Prioridade = p.Prioridade
+                }).Where(p => p.Id == atividade.Id).First();
+
+            return retorno;
+
+        }
     }
 }
