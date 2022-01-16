@@ -1,8 +1,10 @@
+﻿
 using System.ComponentModel.DataAnnotations;
-namespace ProAtividade.API.Models.Entites
-{
-    public class Atividade
-    {
+
+
+namespace ProAtividade.Domain.Atividade {
+    public class Atividade {
+
         [Key]
         public int Id { get; set; }
 
@@ -13,8 +15,12 @@ namespace ProAtividade.API.Models.Entites
         [StringLength(200)]
         public string? Descricao { get; set; }
 
+        public DateTime DataCriacao { get; set; }
+        public DateTime? DataConclusao { get; set; }
+
         [Required]
-        [Range(0,3)]
+        [Range(0, 3)]
         public PrioridadeEnum Prioridade { get; set; }
+
     }
 }
