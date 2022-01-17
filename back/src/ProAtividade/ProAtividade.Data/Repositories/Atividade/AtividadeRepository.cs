@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ProAtividade.Data.Context;
-using ProAtividade.Domain.Base;
+﻿using ProAtividade.Data.Context;
+using ProAtividade.Data.Repositories.Base;
+using ProAtividade.Domain.Atividade;
+using ProAtividade.Domain.Atividade.Repositories;
 
-namespace ProAtividade.Domain.Atividade.Repositories {
+namespace ProAtividade.Data.Repositories {
     public class AtividadeRepository : BaseRepository, IAtividadeRepository {
 
         public AppDbContext _context { get; }

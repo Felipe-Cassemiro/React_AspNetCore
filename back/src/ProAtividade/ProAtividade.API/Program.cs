@@ -1,8 +1,11 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using ProAtividade.Data.Context;
+using ProAtividade.Data.Repositories;
+using ProAtividade.Data.Repositories.Base;
 using ProAtividade.Domain.Atividade.Repositories;
 using ProAtividade.Domain.Atividade.Services;
-using ProAtividade.Domain.Base;
+using ProAtividade.Domain.BaseDomain;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,9 +18,13 @@ builder.Services.AddScoped<IAtividadeService, AtividadeService>();
 builder.Services.AddScoped<IAtividadeRepository, AtividadeRepository>();
 builder.Services.AddScoped<IBaseRepository, BaseRepository>();
 
-builder.Services.AddControllers();
 
-builder.Services.AddCors(); 
+builder.Services.AddControllers()
+                .AddJsonOptions(options => {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
+
+builder.Services.AddCors();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

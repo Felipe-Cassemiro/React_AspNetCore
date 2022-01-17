@@ -1,14 +1,14 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ProAtividade.Domain.Atividade.DTO;
+using ProAtividade.Domain.Atividade.Services;
 using ProAtividade.Domain.Atividade.Repositories;
 
 namespace ProAtividade.Domain.Atividade.Services {
     public class AtividadeService : IAtividadeService {
 
-        public AtividadeRepository _atividadeRepository { get; }
+        public IAtividadeRepository _atividadeRepository { get; }
 
-        public AtividadeService(AtividadeRepository atividadeRepository) {
+        public AtividadeService(IAtividadeRepository atividadeRepository) {
             _atividadeRepository = atividadeRepository;
         }
 
@@ -64,7 +64,8 @@ namespace ProAtividade.Domain.Atividade.Services {
             var NovaAtividade = new Atividade {
                 Descricao = atividade.Descricao,
                 Titulo = atividade.Titulo,
-                Prioridade = atividade.Prioridade
+                Prioridade = atividade.Prioridade,
+                DataCriacao = DateTime.Now
             };
 
             _atividadeRepository.Adicionar(NovaAtividade);

@@ -1,12 +1,13 @@
+﻿using ProAtividade.Data.Context;
+using ProAtividade.Domain.BaseDomain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using ProAtividade.Data.Context;
 
-namespace ProAtividade.Domain.Base {
-    public class BaseRepository : IBaseRepository
-    {
+namespace ProAtividade.Data.Repositories.Base {
+    public class BaseRepository : IBaseRepository {
 
         public AppDbContext _context { get; }
 

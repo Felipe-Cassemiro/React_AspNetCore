@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-
 namespace ProAtividade.Domain.Atividade {
     public class Atividade {
 
@@ -20,6 +19,15 @@ namespace ProAtividade.Domain.Atividade {
         [Required]
         [Range(0, 3)]
         public PrioridadeEnum Prioridade { get; set; }
+
+        public void ConcluirTarefa() {
+            if (DataConclusao == null) {
+                DataConclusao = DateTime.Now;
+            }
+            else {
+                throw new Exception($"Essa tarefa foi concluida em: {DataConclusao?.ToString("dd/MM/yyyy hh:mm")}");
+            }
+        }
 
     }
 }
