@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Atividade(props) {
+export default function AtividadeItem(props) {
 
     function prioridadeAtividade(param) {
         switch (param) {

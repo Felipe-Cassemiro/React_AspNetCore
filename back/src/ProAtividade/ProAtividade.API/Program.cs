@@ -18,6 +18,7 @@ builder.Services.AddScoped<IAtividadeService, AtividadeService>();
 builder.Services.AddScoped<IAtividadeRepository, AtividadeRepository>();
 builder.Services.AddScoped<IBaseRepository, BaseRepository>();
 
+//builder.Services.AddControllersWithViews().AddNewtonsoftJson(x=>x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
 builder.Services.AddControllers()
                 .AddJsonOptions(options => {

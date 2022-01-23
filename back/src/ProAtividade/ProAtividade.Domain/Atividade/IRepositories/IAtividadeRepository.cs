@@ -8,5 +8,6 @@ using System.Threading.Tasks;
 namespace ProAtividade.Domain.Atividade.Repositories {
     public interface IAtividadeRepository : IBaseRepository {
         IQueryable<Atividade> QueryAtividade();
+        Atividade Carregar(int? id);
     }
 }

@@ -1,10 +1,5 @@
 ﻿using ProAtividade.Data.Context;
 using ProAtividade.Domain.BaseDomain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProAtividade.Data.Repositories.Base {
     public class BaseRepository : IBaseRepository {
@@ -29,10 +24,6 @@ namespace ProAtividade.Data.Repositories.Base {
 
         public void DeletarVarios<T>(T entityArray) where T : class {
             _context.RemoveRange(entityArray);
-        }
-
-        public async Task<IQueryable<T>> Queryable<T>(T entity) where T : class {
-            return await Queryable<T>(entity);
         }
 
         public async Task<bool> SalvarMudancasAsync() {

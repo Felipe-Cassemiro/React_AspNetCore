@@ -1,11 +1,11 @@
 import React from 'react'
-import Atividade from "./Atividade";
+import AtividadeItem from "./AtividadeItem";
 
 export default function AtividadesLista(props) {
     return (
         <div className="mt-5">
         {props.listaAtividades.map((ativ) => (
-          <Atividade
+          <AtividadeItem
             key={ativ.id}
             ativ={ativ}
             toggleModalExcluirAtividade={props.toggleModalExcluirAtividade}

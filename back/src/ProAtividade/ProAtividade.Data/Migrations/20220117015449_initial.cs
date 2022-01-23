@@ -17,8 +17,8 @@ namespace ProAtividade.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     titulo = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
                     descricao = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    data_criacao = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    data_conclusao = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    dataCriacao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    dataConclusao = table.Column<DateTime>(type: "datetime2", nullable: true),
                     prioridade = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

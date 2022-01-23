@@ -16,7 +16,7 @@ namespace ProAtividade.API.Controllers {
         }
 
         [HttpGet]
-        public async Task<ActionResult<IAsyncEnumerable<AtividadeDTO>>> ListarAtividades([FromQuery] AtividadeFiltroDTO filtro) {
+        public async Task<ActionResult<IAsyncEnumerable<PegarAtividadeDTO>>> ListarAtividades([FromQuery] AtividadeFiltroDTO filtro) {
             try {
 
                 var dados = await _atividadeService.ListarAtividades(filtro);
@@ -31,7 +31,7 @@ namespace ProAtividade.API.Controllers {
         }
 
         [HttpPost]
-        public async Task<ActionResult<AtividadeDTO>> SalvarNovaAtividade([FromBody] AtividadeDTO atividade) {
+        public async Task<ActionResult<PegarAtividadeDTO>> SalvarNovaAtividade([FromBody] AtividadeDTO atividade) {
             try {
 
                 var atividadeAdicionada = await _atividadeService.AdicionarAtividade(atividade);
@@ -46,12 +46,12 @@ namespace ProAtividade.API.Controllers {
         }
 
         [HttpPut]
-        public async Task<ActionResult<AtividadeDTO>> EditarAtividade([FromBody] AtividadeDTO atividade) {
+        public async Task<ActionResult<PegarAtividadeDTO>> EditarAtividade([FromBody] AtividadeDTO atividade) {
             try {
                 if (atividade.Id.HasValue) {
 
-                    await _atividadeService.EditarAtividade(atividade);
-                    return atividade;
+                    var dados = await _atividadeService.EditarAtividade(atividade);
+                    return dados;
 
                 }
                 else {
@@ -60,9 +60,9 @@ namespace ProAtividade.API.Controllers {
 
                 }
             }
-            catch {
+            catch (Exception e){
 
-                return NotFound($"Atividade Não encontrado");
+                return BadRequest(e);
 
             }
         }
@@ -87,6 +87,28 @@ namespace ProAtividade.API.Controllers {
             catch {
 
                 return NotFound($"Atividade Não encontrado");
+
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> ConcluirTarefa(int? id) {
+            try {
+                if (id > 0) {
+
+                    await _atividadeService.ConcluirTarefa(id);
+                    return Ok("A atividade foi concluida com sucesso");
+
+                }
+                else {
+
+                    return NotFound($"Atividade não encontrado");
+
+                }
+            }
+            catch (Exception e) {
+
+                return BadRequest(e);
 
             }
         }

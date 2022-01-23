@@ -10,7 +10,6 @@ namespace ProAtividade.Domain.BaseDomain {
         void Atualizar<T>(T entity) where T : class;
         void Deletar<T>(T entity) where T : class;
         void DeletarVarios<T>(T entity) where T : class;
-        Task<IQueryable<T>> Queryable<T>(T entity) where T : class;
         Task<bool> SalvarMudancasAsync();
 
     }

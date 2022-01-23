@@ -20,6 +20,10 @@ namespace ProAtividade.Domain.Atividade {
         [Range(0, 3)]
         public PrioridadeEnum Prioridade { get; set; }
 
+        public Atividade() {
+            DataCriacao = DateTime.Now;
+        }
+
         public void ConcluirTarefa() {
             if (DataConclusao == null) {
                 DataConclusao = DateTime.Now;
